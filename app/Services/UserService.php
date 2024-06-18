@@ -11,44 +11,21 @@ class UserService
     protected $userRepository;
     protected $notifier;
 
-    // コンストラクタインジェクション
-    public function __construct(NotifierInterface $notifier)
+    // メソッドインジェクション
+    public function sendNotification(NotifierInterface $notifier, string $to, string $message): void
     {
-        $this->notifier = $notifier;
-    }
-
-    // public function __construct(UserRepositoryInterface $userRepository)
-    // {
-    //     $this->userRepository = $userRepository;
-    // }
-
-    // public function getUserById($id)
-    // {
-    //     return $this->userRepository->find($id);
-    // }
-
-    // public function getAllUsers()
-    // {
-    //     return $this->userRepository->all();
-    // }
-
-    // public function sendNotification(NotifierInterface $notifier, string $to, string $message): void
-    // {
-    //     $notifier->send($to, $message);
-    // }
-
-    public function sendNotification(string $to, string $message): void
-    {
-        $this->notifier->send($to, $message);
+        $notifier->send($to, $message);
     }
 }
 
-  app()->bind(NotifierInterface::class, function ($app) {
+app()->bind(NotifierInterface::class, function ($app) {
         return new MailSender();
 });
 
-$user = app()->make(UserService::class);
-$user->sendNotification("to", 'message');
+$service = app(UserService::class);
+$to = 'address';
+$message = 'message';
+app()->call([$service, 'sendNotification'], ['to' => $to, 'message' => $message]);
 
 // NotifierInterfaceの定義
 interface NotifierInterface
