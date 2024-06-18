@@ -1,6 +1,10 @@
 <?php
 
+use App\Http\Controllers\GameController;
+use App\Http\Controllers\HogeController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
+
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,5 +31,17 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+
+// インターフェース
+Route::get('/hoge', [HogeController::class, 'show']);
+
+// 全てのユーザー情報を取得するルート
+Route::get('/users', [UserController::class, 'index']);
+
+// 特定のユーザー情報を取得するルート
+Route::get('/users/{id}', [UserController::class, 'show']);
+
+Route::get('/attack', [GameController::class, 'attack']);
 
 require __DIR__.'/auth.php';
