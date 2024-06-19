@@ -2,26 +2,32 @@
 // app/Http/Controllers/UserController.php
 namespace App\Http\Controllers;
 
-use App\Services\UserService;
+use App\Contracts\Mailer;
+
+use Illuminate\Http\Response;
+use Illuminate\View\View;
 
 class UserController extends Controller
 {
-    protected $userService;
+    protected $mailer;
 
-    public function __construct(UserService $userService)
+    public function __construct(Mailer $mailer)
     {
-        $this->userService = $userService;
+        $this->mailer = $mailer;
     }
 
-    public function show($id)
+    public function sendWelcomeEmail($user)
     {
-        $user = $this->userService->getUserById($id);
-        return response()->json($user);
+        $this->mailer->send($user->email, 'Welcome', 'Welcome to our application!');
     }
 
-    public function index()
+    public function detail(string $id): View
     {
-        $users = $this->userService->getAllUsers();
-        return response()->json($users);
+        return view('user.detail');
+    }
+
+    public function UserDetail(string $id): Response
+    {
+        return new Response(view('user.detail'), Response::HTTP_OK);
     }
 }
